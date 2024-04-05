@@ -1,11 +1,13 @@
 import styled from 'styled-components';
 import { useCustomNavigate } from '../router';
 import { useContext } from 'react';
-import { LoginContext } from '../context/Login';
+import { LoginContext, LoginDisPatchContext } from '../context/Login';
+import { logoutSession } from '../api';
 
 const Main = () => {
   const { goToLoginPage, goToPostingPage } = useCustomNavigate();
   const isLogin = useContext(LoginContext);
+  const { logout } = useContext(LoginDisPatchContext);
 
   const handleClickPosting = (id: number) => {
     if (!isLogin) return goToLoginPage();
@@ -17,10 +19,19 @@ const Main = () => {
     goToLoginPage();
   };
 
+  const handleClickLogoutButton = () => {
+    logoutSession();
+    logout();
+  };
+
   return (
     <MainContainer>
-      {isLogin || (
-        <LoginButton>포스팅을 확인하시려면 로그인해주세요.</LoginButton>
+      {!isLogin ? (
+        <LoginButton onClick={handleClickLoginButton}>
+          포스팅을 확인하시려면 로그인해주세요.
+        </LoginButton>
+      ) : (
+        <LoginButton onClick={handleClickLogoutButton}>로그아웃</LoginButton>
       )}
       <PostItem onClick={() => handleClickPosting(1)}>xss 게시물보기</PostItem>
     </MainContainer>

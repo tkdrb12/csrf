@@ -2,6 +2,7 @@ import { ChangeEvent, FormEvent, useContext, useState } from 'react';
 import styled from 'styled-components';
 import { useCustomNavigate } from '../router';
 import { LoginDisPatchContext } from '../context/Login';
+import { loginSession } from '../api';
 
 const MAX_PASSWORD_LENGTH = 15;
 const MAX_ID_LENGTH = 15;
@@ -34,17 +35,18 @@ const Login = (props: LoginProps) => {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    tryLogin()
-      .catch(() => {
-        handleLoginError();
-      })
-      .then(() => {
-        goToMainPage();
-      });
+    tryLogin();
   };
 
   const tryLogin = async () => {
-    login();
+    try {
+      await loginSession(id, password);
+
+      login();
+      goToMainPage();
+    } catch (err) {
+      handleLoginError();
+    }
   };
 
   return (

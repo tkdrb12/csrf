@@ -1,10 +1,26 @@
+import { useEffect, useState } from 'react';
+import { getPosting } from '../api';
+
 const XSSPosting = () => {
-  const testingXssString = `<img src="https://image.dongascience.com/Photo/2020/03/5bddba7b6574b95d37b6079c199d7101.jpg" onLoad="alert('XSS 공격!')">`;
+  const [postHtml, setPostHtml] = useState('');
+
+  const tryGetPosting = async () => {
+    try {
+      const post = await getPosting();
+      setPostHtml(post?.html);
+    } catch (err) {}
+  };
+
+  useEffect(() => {
+    tryGetPosting();
+  }, []);
 
   return (
     <div className="App">
-      <div dangerouslySetInnerHTML={{ __html: testingXssString }}></div>
-      안녕하세요. xss 게시물입니다
+      <img src="" alt=""/>
+      <div dangerouslySetInnerHTML={{ __html: postHtml }}></div>
+      안녕하세요. xss 게시물입니다 <br />
+      해당 이미지에 삽입된 스크립트 {postHtml}
     </div>
   );
 };

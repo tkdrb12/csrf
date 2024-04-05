@@ -1,17 +1,31 @@
 import { RouterProvider } from 'react-router-dom';
 import { router } from './router';
 import { LoginContext, LoginDisPatchContext } from './context/Login';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import { validateLogin } from './api';
 
 const App = () => {
   const [isLogin, setIsLogin] = useState(false);
+
+  const tryValidateLogin = async () => {
+    try {
+      await validateLogin();
+      setIsLogin(true);
+    } catch (err) {
+      setIsLogin(false);
+    }
+  };
+
+  useEffect(() => {
+    tryValidateLogin();
+  }, []);
 
   const login = () => {
     setIsLogin(true);
   };
 
   const logout = () => {
-    setIsLogin(false);
+    // setIsLogin(true);
   };
 
   const loginDispatch = useMemo(() => ({ login, logout }), []);
