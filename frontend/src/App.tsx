@@ -25,7 +25,7 @@ const App = () => {
   };
 
   const logout = () => {
-    // setIsLogin(true);
+    setIsLogin(false);
   };
 
   const loginDispatch = useMemo(() => ({ login, logout }), []);

@@ -44,7 +44,7 @@ router.post('/login', (req, res) => {
   const canLogin = TEST_ID === id && TEST_PASSWORD === password;
   if (canLogin) {
     req.session.user = id;
-    res.redirect('http://localhost:3000');
+    res.status(200).json({});
   } else {
     res.status(401).json({
       message: '아이디 또는 비밀번호가 일치하지 않습니다.',

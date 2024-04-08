@@ -12,11 +12,6 @@ export const loginSession = async (id: string, password: string) => {
   });
 
   if (!response.ok) throw new Error('failed login');
-
-  if (response.redirected) return (window.location.href = response.url);
-
-  const json = await response.json();
-  return json;
 };
 
 export const logoutSession = async () => {
