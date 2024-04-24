@@ -14,14 +14,21 @@ export const loginSession = async (id: string, password: string) => {
   if (!response.ok) throw new Error('failed login');
 };
 
-export const logoutSession = async () => {
+export const logoutSession = async (token?: string) => {
   await fetch(`${BASE_URL}/user/logout`, {
     method: 'POST',
     credentials: 'include',
   });
 };
 
-export const validateLogin = async () => {
+export const changePassword = async (newPassword: string, token?: string) => {
+  await fetch(`${BASE_URL}/user/password`, {
+    method: 'POST',
+    credentials: 'include',
+  });
+};
+
+export const validateLogin = async (token?: string) => {
   const response = await fetch(`${BASE_URL}/user/test`, {
     credentials: 'include',
   });
@@ -32,7 +39,7 @@ export const validateLogin = async () => {
   return json;
 };
 
-export const getPosting = async () => {
+export const getPosting = async (token?: string) => {
   const response = await fetch(`${BASE_URL}/user/posting`, {
     credentials: 'include',
   });
