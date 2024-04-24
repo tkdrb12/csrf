@@ -4,6 +4,48 @@ var router = express.Router();
 let TEST_ID = '1234';
 let TEST_PASSWORD = '1234';
 
+const makeToken = () => {
+  return 'TEST';
+};
+
+const validateToken = (req, token) => {
+  if (req.session.token) {
+    if (req.session.token === token) return true;
+
+    return false;
+  }
+
+  return true;
+};
+
+router.post('/referer-check-switch', (req, res) => {
+  const { isCheckingReferer } = req.session;
+
+  if (isCheckingReferer) {
+    req.session.isCheckingReferer = undefined;
+
+    return res.status(200).json({ isCheckingReferer: true });
+  } else {
+    req.session.isCheckingReferer = true;
+
+    return res.status(200).json({ isCheckingReferer: false });
+  }
+});
+
+router.post('/token-check-switch', (req, res) => {
+  const { token } = req.session;
+
+  if (token) {
+    req.session.token = undefined;
+
+    return res.status(200).json({ isUsingToken: true, token });
+  } else {
+    req.session.token = makeToken();
+
+    return res.status(200).json({ isUsingToken: false });
+  }
+});
+
 router.get('/test', (req, res) => {
   const { user } = req.session;
   if (user) {
@@ -14,12 +56,13 @@ router.get('/test', (req, res) => {
 });
 
 router.post('/password', (req, res) => {
-  const { user } = req.session;
+  const { user, token } = req.session;
 
-  if (user) {
+  if (user && validateToken(req, token)) {
     TEST_PASSWORD = '4321';
     return res.status(201).json({});
   }
+
   res.status(404).render('index', { title: 'not login' });
 });
 
@@ -43,8 +86,12 @@ router.post('/login', (req, res) => {
 
   const canLogin = TEST_ID === id && TEST_PASSWORD === password;
   if (canLogin) {
+    const token = 'TEST';
+
     req.session.user = id;
-    res.status(200).json({});
+    req.session.token = token;
+
+    res.status(200).json({ token });
   } else {
     res.status(401).json({
       message: '아이디 또는 비밀번호가 일치하지 않습니다.',
