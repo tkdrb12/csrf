@@ -3,6 +3,7 @@ import { useCustomNavigate } from '../router';
 import { useContext } from 'react';
 import { LoginContext, LoginDisPatchContext } from '../context/Login';
 import { logoutSession } from '../api';
+import ApiOptionMenu from '../component/menu/ApiOptionMenu';
 
 const Main = () => {
   const { goToLoginPage, goToPostingPage } = useCustomNavigate();

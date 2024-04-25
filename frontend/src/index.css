@@ -30,3 +30,7 @@ button {
   overflow: visible;
   cursor: pointer;
 }
+
+.App {
+  margin: none;
+}
