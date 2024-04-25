@@ -46,7 +46,7 @@ const Name = styled.div`
 
   height: 35px;
 
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   color: #0a0a0a;
 `;

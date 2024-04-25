@@ -67,7 +67,7 @@ const Container = styled.div<{ $isActive: boolean }>`
   width: ${({ $isActive }) => ($isActive ? '300px' : '50px')};
   height: ${({ $isActive }) => ($isActive ? '350px' : '50px')};
   border-radius: ${({ $isActive }) => ($isActive ? '10px' : '20px')};
-  padding: ${({ $isActive }) => ($isActive ? '32px' : '0')};
+  padding: ${({ $isActive }) => ($isActive ? '35px' : '0')};
   box-shadow: 0 0 16px 3px rgba(0 0 0 / 15%);
 
   background-color: white;
