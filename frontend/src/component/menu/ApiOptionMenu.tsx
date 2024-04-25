@@ -14,7 +14,7 @@ const ApiOptionMenu = () => {
 
   const options = [
     {
-      name: 'referer 체크',
+      name: 'Referer 검사',
       value: isCheckingReferer,
       handler: {
         handleToggleOn: checkReferer,
@@ -22,7 +22,7 @@ const ApiOptionMenu = () => {
       },
     },
     {
-      name: 'csrf 토큰 체크',
+      name: 'Token 검사',
       value: hasCSRFToken,
       handler: {
         handleToggleOn: useCSRFToken,

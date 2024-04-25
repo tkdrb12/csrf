@@ -1,24 +1,69 @@
-import { PropsWithChildren, useMemo, useState } from 'react';
+import { PropsWithChildren, useEffect, useMemo, useState } from 'react';
 import { ApiOptionContext, ApiOptionDisPatchContext } from './ApiOption';
+import {
+  checkRefererOption,
+  checkTokenOption,
+  turnOffRefererOption,
+  turnOffTokenOption,
+  turnOnRefererOption,
+  turnOnTokenOption,
+} from '../api';
 
 const ApiOptionProvider = ({ children }: PropsWithChildren) => {
   const [hasCSRFToken, setHasCSRFToken] = useState(false);
   const [isCheckingReferer, setIsCheckingReferer] = useState(false);
 
+  const tryCheckTokenOption = async () => {
+    try {
+      const { token, isUsingToken } = await checkTokenOption();
+
+      if (!!token) localStorage.setItem('CSRF-TOKEN', token);
+
+      setHasCSRFToken(isUsingToken);
+    } catch (err) {
+      localStorage.removeItem('CSRF-TOKEN');
+    }
+  };
+
+  const tryCheckRefererOption = async () => {
+    try {
+      const { isUsingReferer } = await checkRefererOption();
+
+      setIsCheckingReferer(isUsingReferer);
+    } catch (err) {}
+  };
+
+  useEffect(() => {
+    tryCheckTokenOption();
+    tryCheckRefererOption();
+  }, []);
+
   const noCheckReferer = () => {
-    setIsCheckingReferer(false);
+    turnOffRefererOption().then(() => {
+      setIsCheckingReferer(false);
+    });
   };
 
   const checkReferer = () => {
-    setIsCheckingReferer(true);
+    turnOnRefererOption().then(() => {
+      setIsCheckingReferer(true);
+    });
   };
 
   const noUseCSRFToken = () => {
-    setHasCSRFToken(false);
+    turnOffTokenOption().then(() => {
+      setHasCSRFToken(false);
+
+      localStorage.removeItem('CSRF-TOKEN');
+    });
   };
 
   const useCSRFToken = () => {
-    setHasCSRFToken(true);
+    turnOnTokenOption().then(({ token }) => {
+      setHasCSRFToken(true);
+
+      localStorage.setItem('CSRF-TOKEN', token);
+    });
   };
 
   const apiOptionDispatch = useMemo(
