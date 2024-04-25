@@ -4,8 +4,11 @@ var router = express.Router();
 let TEST_ID = '1234';
 let TEST_PASSWORD = '1234';
 
+const SAFE_REFERER = 'http://localhost:3000/';
+
 const makeToken = () => {
-  return 'TEST';
+  // jwt 추가 예정
+  return 'TEST-TOKEN';
 };
 
 const validateToken = (req, token) => {
@@ -18,36 +21,61 @@ const validateToken = (req, token) => {
   return true;
 };
 
-router.post('/referer-check-switch', (req, res) => {
-  const { isCheckingReferer } = req.session;
+const validateReferer = (req) => {
+  const referer = req.header('Referer');
 
-  if (isCheckingReferer) {
-    req.session.isCheckingReferer = undefined;
+  console.log(referer);
 
-    return res.status(200).json({ isCheckingReferer: true });
-  } else {
-    req.session.isCheckingReferer = true;
+  if (req.session.isUsingReferer) {
+    if (referer === SAFE_REFERER) return true;
 
-    return res.status(200).json({ isCheckingReferer: false });
+    return false;
   }
+
+  return true;
+};
+
+router.get('/referer-check', (req, res) => {
+  const isUsingReferer = !!req.session.isUsingReferer;
+
+  return res.status(200).json({ isUsingReferer });
 });
 
-router.post('/token-check-switch', (req, res) => {
-  const { token } = req.session;
+router.post('/referer-check-on', (req, res) => {
+  req.session.isUsingReferer = true;
 
-  if (token) {
-    req.session.token = undefined;
+  return res.status(200).json({ isUsingReferer: true });
+});
 
-    return res.status(200).json({ isUsingToken: true, token });
-  } else {
-    req.session.token = makeToken();
+router.post('/referer-check-off', (req, res) => {
+  req.session.isUsingReferer = false;
 
-    return res.status(200).json({ isUsingToken: false });
-  }
+  return res.status(200).json({ isUsingReferer: false });
+});
+
+router.get('/token-check', (req, res) => {
+  const token = req.session.token;
+
+  return res.status(200).json({ isUsingToken: !!token, token });
+});
+
+router.post('/token-check-on', (req, res) => {
+  const token = makeToken();
+
+  req.session.token = token;
+
+  return res.status(200).json({ isUsingToken: true, token });
+});
+
+router.post('/token-check-off', (req, res) => {
+  req.session.token = undefined;
+
+  return res.status(200).json({ isUsingToken: false });
 });
 
 router.get('/test', (req, res) => {
   const { user } = req.session;
+
   if (user) {
     return res.status(200).json({});
   } else {
@@ -56,9 +84,14 @@ router.get('/test', (req, res) => {
 });
 
 router.post('/password', (req, res) => {
-  const { user, token } = req.session;
+  const { user } = req.session;
+  const { token } = req.query;
 
-  if (user && validateToken(req, token)) {
+  if (!validateToken(req, token) || !validateReferer(req)) {
+    return res.status(403).json({ title: 'not validate' });
+  }
+
+  if (user) {
     TEST_PASSWORD = '4321';
     return res.status(201).json({});
   }
@@ -68,13 +101,19 @@ router.post('/password', (req, res) => {
 
 router.get('/posting', (req, res) => {
   const { user } = req.session;
+  const { token } = req.query;
 
-  if (user) {
-    return res.status(200).json({
-      html: `<img src="https://image.dongascience.com/Photo/2020/03/5bddba7b6574b95d37b6079c199d7101.jpg" onLoad="fetch('http://localhost:3001/user/password', {method: 'POST', credentials:'include'})">`,
-    });
+  if (!validateToken(req, token) || !validateReferer(req)) {
+    return res.status(403).json({ title: 'not validate' });
   }
-  res.status(404).render('index', { title: 'not login' });
+
+  if (!user) {
+    return res.status(404).render('index', { title: 'not login' });
+  }
+
+  return res.status(200).json({
+    html: `<img src="https://image.dongascience.com/Photo/2020/03/5bddba7b6574b95d37b6079c199d7101.jpg" onLoad="fetch('http://localhost:3001/user/password', {method: 'POST', credentials:'include'})">`,
+  });
 });
 
 router.post('/login', (req, res) => {
@@ -86,12 +125,9 @@ router.post('/login', (req, res) => {
 
   const canLogin = TEST_ID === id && TEST_PASSWORD === password;
   if (canLogin) {
-    const token = 'TEST';
-
     req.session.user = id;
-    req.session.token = token;
 
-    res.status(200).json({ token });
+    res.status(200).json({});
   } else {
     res.status(401).json({
       message: '아이디 또는 비밀번호가 일치하지 않습니다.',
