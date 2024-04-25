@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import ApiOptionMenu from '../component/menu/ApiOptionMenu';
 import { LoginContext, LoginDisPatchContext } from '../context/Login';
 import { useCustomNavigate } from '../router';
+import { logoutSession } from '../api';
 
 const Root = () => {
   const isLogin = useContext(LoginContext);
@@ -11,12 +12,24 @@ const Root = () => {
 
   const { goToMainPage, goToLoginPage } = useCustomNavigate();
 
+  const handleClickLogoButton = () => {
+    goToMainPage();
+  };
+
+  const handleClickLogoutButton = () => {
+    logoutSession();
+    logout();
+    goToMainPage();
+  };
+
   return (
     <div>
       <Header>
-        <Logo onClick={goToMainPage}>TEST</Logo>
+        <Logo onClick={handleClickLogoButton}>TEST</Logo>
         {isLogin ? (
-          <LogoutButton onClick={logout}>로그아웃</LogoutButton>
+          <LogoutButton onClick={handleClickLogoutButton}>
+            로그아웃
+          </LogoutButton>
         ) : (
           <LoginButton onClick={goToLoginPage}>로그인</LoginButton>
         )}
