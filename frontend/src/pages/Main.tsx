@@ -47,7 +47,11 @@ const Main = () => {
         </LoginMessage>
       )}
       {postList.map((item) => (
-        <PostItem key={item.id} onClick={() => handleClickPosting(item.id)}>
+        <PostItem
+          key={item.id}
+          onClick={() => handleClickPosting(item.id)}
+          $isLogin={isLogin}
+        >
           <PostContainer>
             <PostTitle>{item.title}</PostTitle>
             <PostContents>{item.contents}</PostContents>
@@ -69,7 +73,10 @@ const MainContainer = styled.div`
   margin: 50px auto;
 `;
 
-const PostItem = styled.button``;
+const PostItem = styled.button<{ $isLogin: boolean }>`
+  ${({ $isLogin }) => !$isLogin && 'filter: blur(5px);'}
+  ${({ $isLogin }) => !$isLogin && '-webkit-filter: blur(1.5px);'}
+`;
 
 const PostContainer = styled.div`
   display: flex;

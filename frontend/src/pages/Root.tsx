@@ -34,9 +34,11 @@ const Root = () => {
           <LoginButton onClick={goToLoginPage}>로그인</LoginButton>
         )}
       </Header>
-      <Nav>
-        <ApiOptionMenu />
-      </Nav>
+      {isLogin && (
+        <Nav>
+          <ApiOptionMenu />
+        </Nav>
+      )}
       <Outlet />
     </div>
   );

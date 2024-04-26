@@ -28,6 +28,7 @@ const ToggleList = ({ options }: OptionsProps) => {
         onMouseOut={handleMouseOut}
         $isActive={isActive}
       >
+        {isActive && <Label>CSRF 방어 설정</Label>}
         {isActive &&
           options.map((option) => (
             <ToggleItem key={option.name} option={option}></ToggleItem>
@@ -59,6 +60,14 @@ const IconBox = styled.div<{ $isActive: boolean }>`
   color: ${({ $isActive }) => ($isActive ? 'transparent' : 'gray')};
 `;
 
+const Label = styled.div`
+  height: 45px;
+  border-bottom: 1px solid lightgray;
+
+  font-size: 15px;
+  font-weight: 600;
+`;
+
 const Container = styled.div<{ $isActive: boolean }>`
   display: flex;
   flex-direction: column;
@@ -67,7 +76,7 @@ const Container = styled.div<{ $isActive: boolean }>`
   width: ${({ $isActive }) => ($isActive ? '300px' : '50px')};
   height: ${({ $isActive }) => ($isActive ? '350px' : '50px')};
   border-radius: ${({ $isActive }) => ($isActive ? '10px' : '20px')};
-  padding: ${({ $isActive }) => ($isActive ? '35px' : '0')};
+  padding: ${({ $isActive }) => ($isActive ? '30px 35px' : '0')};
   box-shadow: 0 0 16px 3px rgba(0 0 0 / 15%);
 
   background-color: white;
