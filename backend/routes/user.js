@@ -1,6 +1,7 @@
 var express = require('express');
 const { validateToken, validateReferer } = require('../util/validateRequest');
 const { makeToken } = require('../util/token');
+
 var router = express.Router();
 
 let TEST_ID = '1234';
