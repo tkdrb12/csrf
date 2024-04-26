@@ -1,39 +1,10 @@
 var express = require('express');
+const { validateToken, validateReferer } = require('../util/validateRequest');
+const { makeToken } = require('../util/token');
 var router = express.Router();
 
 let TEST_ID = '1234';
 let TEST_PASSWORD = '1234';
-
-const SAFE_REFERER = 'http://localhost:3000/';
-
-const makeToken = () => {
-  // jwt 추가 예정
-  return 'TEST-TOKEN';
-};
-
-const validateToken = (req, token) => {
-  if (req.session.token) {
-    if (req.session.token === token) return true;
-
-    return false;
-  }
-
-  return true;
-};
-
-const validateReferer = (req) => {
-  const referer = req.header('Referer');
-
-  console.log(referer);
-
-  if (req.session.isUsingReferer) {
-    if (referer === SAFE_REFERER) return true;
-
-    return false;
-  }
-
-  return true;
-};
 
 router.get('/referer-check', (req, res) => {
   const isUsingReferer = !!req.session.isUsingReferer;
@@ -112,7 +83,8 @@ router.get('/posting', (req, res) => {
   }
 
   return res.status(200).json({
-    html: `<img src="https://image.dongascience.com/Photo/2020/03/5bddba7b6574b95d37b6079c199d7101.jpg" onLoad="fetch('http://localhost:3001/user/password', {method: 'POST', credentials:'include'})">`,
+    title: 'xss 테스트용 게시물입니다.',
+    html: `<img src="https://image.dongascience.com/Photo/2020/03/5bddba7b6574b95d37b6079c199d7101.jpg" onLoad="fetch('http://localhost:3001/user/password', {method: 'POST', credentials:'include'})"> <div>해당 이미지 태그에 비밀번호 변경 요청이 포함되어 있습니다</div>`,
   });
 });
 
