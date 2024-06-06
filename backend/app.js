@@ -5,6 +5,7 @@ const cors = require('cors');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const session = require('express-session');
+const bodyParser = require('body-parser');
 
 var authRouter = require('./routes/auth');
 var csrfRouter = require('./routes/csrf');
@@ -19,6 +20,7 @@ let corsOptions = {
 };
 
 app.use(cookieParser());
+app.use(bodyParser.text());
 
 app.use(
   session({

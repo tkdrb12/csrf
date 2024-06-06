@@ -15,7 +15,7 @@ const requestErrorHandler = (callback, res) => {
     callback();
   } catch (error) {
     return res.status(error.errorCode).json({
-      errorCode: errorCode.errorCode,
+      errorCode: error.errorCode,
       errorMessage: error.errorMessage,
     });
   }

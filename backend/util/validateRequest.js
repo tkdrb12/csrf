@@ -1,3 +1,4 @@
+const { TEST_ID, TEST_PASSWORD, SAFE_REFERER } = require('../testData');
 const { RequestError } = require('./requestErrorHandler');
 
 const validateLogin = (req) => {
@@ -5,7 +6,7 @@ const validateLogin = (req) => {
 };
 
 const validateIDAndPassword = (id, password) => {
-  const canLogin = TEST_ID === id && TEST_PASSWORD === password;
+  const canLogin = TEST_ID === id && TEST_PASSWORD.data === password;
   if (!canLogin) {
     throw new RequestError('아이디 또는 비밀번호가 일치하지 않습니다', 401);
   }
@@ -17,20 +18,19 @@ const validateToken = (req, token = false) => {
 
     throw new RequestError('토큰이 존재하지 않습니다.', 403);
   }
-
-  return true;
 };
 
 const validateReferer = (req, isUsingReferer = false) => {
-  const referer = req.header('Referer');
-
   if (isUsingReferer) {
-    if (referer === SAFE_REFERER) return true;
+    try {
+      const referer = req.header('Referer');
 
-    throw new RequestError('리퍼러 헤더가 정상적이지 않습니다.', 403);
+      if (referer !== SAFE_REFERER)
+        throw new RequestError('리퍼러 헤더가 정상적이지 않습니다.', 403);
+    } catch (err) {
+      throw new RequestError('리퍼러 헤더가 정상적이지 않습니다.', 403);
+    }
   }
-
-  return true;
 };
 
 const validateRequest = (req) => {
