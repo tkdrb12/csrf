@@ -43,18 +43,16 @@ router.post('/login', (req, res) => {
   requestErrorHandler(() => {
     validateIDAndPassword(id, password);
 
-    req.session.regenerate(() => {
-      req.session.user = id;
-      res.status(200).json({});
-    });
+    req.session.user = id;
+    res.status(200).json({});
   }, res);
 });
 
 router.post('/logout', (req, res) => {
   if (req.session.user) {
-    req.session.destroy();
-
-    res.status(200).json({ message: '로그아웃이 정상적으로 완료되었습니다.' });
+    req.session.destroy(() =>
+      res.status(200).json({ message: '로그아웃이 정상적으로 완료되었습니다.' })
+    );
 
     return;
   }

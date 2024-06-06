@@ -1,8 +1,18 @@
-import { useState, useMemo, useEffect, PropsWithChildren } from 'react';
+import {
+  useState,
+  useMemo,
+  useEffect,
+  PropsWithChildren,
+  useContext,
+} from 'react';
 import { validateLogin } from '../api';
 import { LoginContext, LoginDisPatchContext } from './Login';
+import { ApiOptionDisPatchContext } from './ApiOption';
 
 const LoginProvider = ({ children }: PropsWithChildren) => {
+  const { noCheckReferer, noUseCSRFToken } = useContext(
+    ApiOptionDisPatchContext
+  );
   const [isLogin, setIsLogin] = useState(false);
 
   const tryValidateLogin = async () => {
@@ -24,6 +34,8 @@ const LoginProvider = ({ children }: PropsWithChildren) => {
 
   const logout = () => {
     setIsLogin(false);
+    noCheckReferer();
+    noUseCSRFToken();
   };
 
   const loginDispatch = useMemo(() => ({ login, logout }), []);

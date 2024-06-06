@@ -26,7 +26,7 @@ const validateReferer = (req, isUsingReferer = false) => {
       const referer = req.header('Referer');
 
       if (referer !== SAFE_REFERER)
-        throw new RequestError('리퍼러 헤더가 정상적이지 않습니다.', 403);
+        throw new RequestError('허용되지 않은 리퍼러 헤더입니다.', 403);
     } catch (err) {
       throw new RequestError('리퍼러 헤더가 정상적이지 않습니다.', 403);
     }
@@ -34,6 +34,8 @@ const validateReferer = (req, isUsingReferer = false) => {
 };
 
 const validateRequest = (req) => {
+  console.log(req.session);
+
   validateToken(req, req.query.token);
   validateReferer(req, req.session.isUsingReferer);
 };

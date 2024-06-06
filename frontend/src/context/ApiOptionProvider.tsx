@@ -22,6 +22,7 @@ const ApiOptionProvider = ({ children }: PropsWithChildren) => {
       setHasCSRFToken(isUsingToken);
     } catch (err) {
       localStorage.removeItem('CSRF-TOKEN');
+      setHasCSRFToken(false);
     }
   };
 
@@ -30,7 +31,9 @@ const ApiOptionProvider = ({ children }: PropsWithChildren) => {
       const { isUsingReferer } = await checkRefererOption();
 
       setIsCheckingReferer(isUsingReferer);
-    } catch (err) {}
+    } catch (err) {
+      setIsCheckingReferer(false);
+    }
   };
 
   useEffect(() => {

@@ -6,11 +6,11 @@ import LoginProvider from './context/LoginProvider';
 const App = () => {
   return (
     <div className="App">
-      <LoginProvider>
-        <ApiOptionProvider>
+      <ApiOptionProvider>
+        <LoginProvider>
           <RouterProvider router={router} />
-        </ApiOptionProvider>
-      </LoginProvider>
+        </LoginProvider>
+      </ApiOptionProvider>
     </div>
   );
 };
