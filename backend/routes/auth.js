@@ -16,8 +16,10 @@ router.get('/check', (req, res) => {
 });
 
 router.post('/password', (req, res) => {
+  const { token } = req.query;
+
   requestErrorHandler(() => {
-    validateRequest(req);
+    validateRequest(req, token);
 
     TEST_PASSWORD.data = '4321';
     return res.status(201).json({});

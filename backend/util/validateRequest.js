@@ -13,7 +13,7 @@ const validateIDAndPassword = (id, password) => {
 };
 
 const validateToken = (req, token = false) => {
-  if (token) {
+  if (req.session.token) {
     if (req.session.token === token) return true;
 
     throw new RequestError('토큰이 존재하지 않습니다.', 403);
@@ -33,10 +33,8 @@ const validateReferer = (req, isUsingReferer = false) => {
   }
 };
 
-const validateRequest = (req) => {
-  console.log(req.session);
-
-  validateToken(req, req.query.token);
+const validateRequest = (req, token) => {
+  validateToken(req, token);
   validateReferer(req, req.session.isUsingReferer);
 };
 

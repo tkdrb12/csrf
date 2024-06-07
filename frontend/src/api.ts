@@ -2,7 +2,7 @@ const BASE_URL = 'http://localhost:3001';
 
 export const loginSession = async (id: string, password: string) => {
   const body = JSON.stringify({ id, password });
-  const response = await fetch(`${BASE_URL}/user/login`, {
+  const response = await fetch(`${BASE_URL}/auth/login`, {
     headers: {
       'Content-Type': 'application/json',
     },
@@ -15,7 +15,10 @@ export const loginSession = async (id: string, password: string) => {
 };
 
 export const logoutSession = async (token?: string) => {
-  await fetch(`${BASE_URL}/user/logout`, {
+  await fetch(`${BASE_URL}/auth/logout`, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
     method: 'POST',
     credentials: 'include',
   });
@@ -25,14 +28,14 @@ export const changePassword = async (newPassword: string) => {
   const token = localStorage.getItem('CSRF-TOKEN');
   const params = new URLSearchParams({ ...(token && { token }) }).toString();
 
-  await fetch(`${BASE_URL}/user/password?${params}`, {
+  await fetch(`${BASE_URL}/auth/password?${params}`, {
     method: 'POST',
     credentials: 'include',
   });
 };
 
 export const validateLogin = async () => {
-  const response = await fetch(`${BASE_URL}/user/test`, {
+  const response = await fetch(`${BASE_URL}/auth/check`, {
     credentials: 'include',
   });
 
@@ -58,7 +61,7 @@ export const getPosting = async () => {
 };
 
 export const turnOnTokenOption = async () => {
-  const response = await fetch(`${BASE_URL}/user/token-check-on`, {
+  const response = await fetch(`${BASE_URL}/csrf/token-check-on`, {
     method: 'POST',
     credentials: 'include',
   });
@@ -68,7 +71,7 @@ export const turnOnTokenOption = async () => {
 };
 
 export const checkTokenOption = async () => {
-  const response = await fetch(`${BASE_URL}/user/token-check`, {
+  const response = await fetch(`${BASE_URL}/csrf/token-check`, {
     method: 'GET',
     credentials: 'include',
   });
@@ -80,14 +83,14 @@ export const checkTokenOption = async () => {
 };
 
 export const turnOffTokenOption = async () => {
-  await fetch(`${BASE_URL}/user/token-check-off`, {
+  await fetch(`${BASE_URL}/csrf/token-check-off`, {
     method: 'POST',
     credentials: 'include',
   });
 };
 
 export const checkRefererOption = async () => {
-  const response = await fetch(`${BASE_URL}/user/referer-check`, {
+  const response = await fetch(`${BASE_URL}/csrf/referer-check`, {
     method: 'GET',
     credentials: 'include',
   });
@@ -99,14 +102,14 @@ export const checkRefererOption = async () => {
 };
 
 export const turnOnRefererOption = async () => {
-  await fetch(`${BASE_URL}/user/referer-check-on`, {
+  await fetch(`${BASE_URL}/csrf/referer-check-on`, {
     method: 'POST',
     credentials: 'include',
   });
 };
 
 export const turnOffRefererOption = async () => {
-  await fetch(`${BASE_URL}/user/referer-check-off`, {
+  await fetch(`${BASE_URL}/csrf/referer-check-off`, {
     method: 'POST',
     credentials: 'include',
   });

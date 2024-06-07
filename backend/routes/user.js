@@ -7,7 +7,6 @@ var router = express.Router();
 
 router.get('/posting', (req, res) => {
   requestErrorHandler(() => {
-    validateRequest(req);
     validateLogin(req);
 
     return res.status(200).json({
